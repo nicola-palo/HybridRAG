@@ -10,6 +10,7 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "asyncpg>=0.31",
+    "pydantic-settings>=2.15.0",
 ]
 
 [dependency-groups]

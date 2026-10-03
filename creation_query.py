@@ -2,14 +2,15 @@ import asyncio
 
 import asyncpg
 
+from hybridrag.config import Settings
 
-async def main():
-    conn = await asyncpg.connect(
-        host="localhost", port=5432, user="rag_user", password="rag_password", database="rag_db"
-    )
+
+async def main() -> None:
+    settings = Settings()
+    conn = await asyncpg.connect(settings.db_dsn)
 
     await conn.execute("CREATE EXTENSION IF NOT EXISTS vector;")
-    print(">>>Estensione pgvector abilitata con successo!")
+    print(">>>pgvector extension enabled successfully!")
 
     await conn.close()
 
