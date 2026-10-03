@@ -1,1 +1,17 @@
-.venv
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environment & local secrets
+.env
+
+# Tooling session data
+.zcode/
