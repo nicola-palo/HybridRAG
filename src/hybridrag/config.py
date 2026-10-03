@@ -26,6 +26,11 @@ class Settings(BaseSettings):
     db_user: str = "rag_user"
     db_password: str = "rag_password"
     db_name: str = "rag_db"
+    # Dimension of the embedding model's vectors. HNSW indexes support up to
+    # 2000 dimensions; changing the model requires re-embedding and a schema
+    # migration. bge-m3 = 1024, nomic-embed-text = 768,
+    # text-embedding-3-small = 1536.
+    embedding_dim: int = Field(default=1024, ge=1, le=2000)
 
     @property
     def db_dsn(self) -> str:
