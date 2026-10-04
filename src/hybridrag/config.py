@@ -5,9 +5,10 @@ variables (prefix ``RAG_``), optionally backed by a local ``.env`` file that
 is never committed. See ``.env.example`` for the expected variables.
 """
 
+from typing import Self
 from urllib.parse import quote
 
-from pydantic import Field
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -31,6 +32,18 @@ class Settings(BaseSettings):
     # migration. bge-m3 = 1024, nomic-embed-text = 768,
     # text-embedding-3-small = 1536.
     embedding_dim: int = Field(default=1024, ge=1, le=2000)
+    # Chunking: target size per chunk (estimated tokens) and trailing context
+    # repeated between consecutive chunks. The heuristic assumes ~4 characters
+    # per token; swap in a real tokenizer if precision ever matters.
+    chunk_target_tokens: int = Field(default=512, ge=16, le=4096)
+    chunk_overlap_tokens: int = Field(default=64, ge=0, le=1024)
+
+    @model_validator(mode="after")
+    def _overlap_below_target(self) -> Self:
+        if self.chunk_overlap_tokens >= self.chunk_target_tokens:
+            msg = "chunk_overlap_tokens must be smaller than chunk_target_tokens"
+            raise ValueError(msg)
+        return self
 
     @property
     def db_dsn(self) -> str:
